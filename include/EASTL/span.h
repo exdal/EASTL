@@ -1,3 +1,5 @@
+// Created on Monday June 12th 2023 by exdal
+// Last modified on Monday June 12th 2023 by exdal
 /////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Electronic Arts Inc. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
@@ -90,6 +92,7 @@ namespace eastl
 		EA_CONSTEXPR span(const span& other) EA_NOEXCEPT = default;
 		EA_CONSTEXPR span(pointer ptr, index_type count);
 		EA_CONSTEXPR span(pointer pBegin, pointer pEnd);
+		EA_CONSTEXPR span(reference ref);
 		            ~span() EA_NOEXCEPT = default;
 
 		// copy-assignment operator
@@ -230,6 +233,13 @@ namespace eastl
 	template <typename T, size_t Extent>
 	EA_CONSTEXPR span<T, Extent>::span(pointer pBegin, pointer pEnd)
 	    : mpData(pBegin), mnSize(static_cast<index_type>(pEnd - pBegin))
+	{
+		EASTL_ASSERT_MSG(Extent == dynamic_extent || Extent == mnSize, "impossible to create a span with a fixed Extent different than the size of the supplied buffer");
+	}
+
+	template <typename T, size_t Extent>
+	EA_CONSTEXPR span<T, Extent>::span(reference ref)
+	    : mpData(&ref), mnSize(1)
 	{
 		EASTL_ASSERT_MSG(Extent == dynamic_extent || Extent == mnSize, "impossible to create a span with a fixed Extent different than the size of the supplied buffer");
 	}
